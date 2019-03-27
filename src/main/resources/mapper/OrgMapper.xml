@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lcl.serviceplatform.Dao.OrgDao">
+    <sql id="clo">
+		org_id AS id,
+		org_name AS name,
+		org_code AS code,
+		org_address AS address,
+		org_legal AS legal,
+		org_phone AS phone
+	</sql>
+    <insert id="add" parameterType="Org">
+		insert into org values(#{id},#{code},#{name},#{address},#{legal},#{phone})
+	</insert>
+    <delete id="delete">
+		delete from org where org_id = #{id}
+	</delete>
+    <update id="update">
+		update org set org_code = #{code}, org_name = #{name}, org_address=#{address}, org_legal=#{legal},org_phone=#{phone} where org_id = #{id}
+	</update>
+    <select id="findAll" resultType="Org">
+        select
+        <include refid="clo"/>
+        from org
+        <if test="_parameter != null">
+            where org_code like
+            concat('%',#{keyword},'%')
+            or org_name like concat('%',#{keyword},'%')
+            or org_legal like concat('%',#{keyword},'%')
+        </if>
+    </select>
+    <select  id="findOrgByCodeOrName" resultType="Org">
+        select <include refid="clo"/>
+         from  org
+         where org_code = #{code} or org_name = #{name}
+    </select>
+    <select id="findById" resultType="Org">
+        select
+        <include refid="clo"/>
+        from org
+        where org_id = #{id}
+    </select>
+</mapper>

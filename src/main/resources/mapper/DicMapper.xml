@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lcl.serviceplatform.Dao.DicDao">
+    <sql id="clo">
+		d_type AS type,
+		d_name AS name,
+		d_value AS value
+	</sql>
+    <insert id="add" parameterType="Dic">
+		insert into dic values(#{type},#{name},#{value})
+	</insert>
+    <delete id="delete">
+		delete from dic where d_type = #{type} and d_name = #{name}
+	</delete>
+    <update id="update">
+		update dic set d_value = #{value} where d_type=#{type} and d_name=#{name}
+	</update>
+    <select id="findByType" resultType="Dic">
+        select
+        <include refid="clo"/>
+        from dic where d_type=#{type}
+    </select>
+</mapper>

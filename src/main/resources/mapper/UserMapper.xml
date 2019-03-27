@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lcl.serviceplatform.Dao.UserDao">
+	<sql id="clo">
+		u.u_id AS id,
+		u.u_name AS name,
+		u.u_password AS password,
+		u.u_age AS age,
+		u.u_dept AS dept,
+		u.u_phone AS phone,
+		u.u_email AS email,
+		u.u_gender AS "gender.value",
+		d1.d_type AS "gender.type",
+		d1.d_name AS "gender.name",
+		u.u_nation AS "nation.value",
+		d2.d_type AS "nation.type",
+		d2.d_name AS "nation.name",
+		u.u_job AS "job.value",
+		d3.d_type AS "job.type",
+		d3.d_name AS "job.name",
+		u.u_politics AS "politics.value",
+		d4.d_type AS "politics.type",
+		d4.d_name AS "politics.name",
+		u.org_id AS "org.id",
+		o.org_name AS "org.name",
+		o.org_code AS "org.code",
+		o.org_address AS "org.address",
+		o.org_legal AS "org.legal",
+		o.org_phone AS "org.phone"
+	</sql>
+	<sql id="join">
+		join dic d1 on d1.d_type = '性别' and d1.d_value = u.u_gender
+		join dic d2 on d2.d_type = '民族' and d2.d_value = u.u_nation
+		join dic d3 on d3.d_type = '职务' and d3.d_value = u.u_job
+		join dic d4 on d4.d_type = '政治面貌' and d4.d_value = u.u_politics
+		join org o on o.org_id = u.org_id
+	</sql>
+	<insert id="add" parameterType="User">
+		insert into user values(#{id},#{name},#{password},#{age},#{gender.value},
+		#{nation.value},#{org.id},#{dept},#{job.value},#{politics.value},#{phone},#{email})
+	</insert>
+	<delete id="delete">
+		delete from user where u_id=#{id}
+	</delete>
+	<update id="update">
+		update user
+		  set u_password=#{password},u_age=#{age},u_gender=#{gender.value},u_nation=#{nation.value},org_id=#{org.id},u_dept=#{dept},u_job=#{job.value},u_politics=#{politics.value},u_phone=#{phone},u_email=#{email}
+		where u_id=#{id}
+	</update>
+	<select id="findByNameAndPassword" resultType="User">
+		select
+		<include refid="clo"/>
+		from user u
+		<include refid="join"/>
+		where u_name = #{name} and u_password = #{password}
+	</select>
+	<select id="findByName" resultType="User">
+		select
+		<include refid="clo"/>
+		from user u
+		<include refid="join"/>
+		where u_name like concat(#{name}, '%')
+	</select>
+	<select id="findAll" resultType="User">
+		select
+		<include refid="clo"/>
+		from user u
+		<include refid="join"/>
+		where 1=1
+		<if test="name != null">
+			and u_name like concat(#{name}, '%')
+		</if>
+		<if test="age != null">
+			and u_age = #{age}
+		</if>
+		<if test="gender != null and gender.value != null">
+			and u_gender = #{gender.value}
+		</if>
+		<if test="org != null and org.id!=null and org.id.length != 0">
+			and u.org_id = #{org.id}
+		</if>
+	</select>
+</mapper>
+<!--
+SELECT
+	u.u_id AS id,u.u_name AS NAME,
+	u.u_password AS PASSWORD,
+	u.u_age AS age,u.u_dept AS dept,
+	u.u_phone AS phone,
+	u.u_email AS email,
+	u.u_gender AS "gender.value",
+	d1.d_type AS "gender.type",
+	d1.d_name AS "gender.name",
+	u.u_nation AS "nation.value",
+	d2.d_type AS "nation.type",
+	d2.d_name AS "nation.name",
+	u.u_job AS "job.value",
+	d3.d_type AS "job.type",
+	d3.d_name AS "job.name",
+	u.u_politics AS "politics.value",
+	d4.d_type AS "politics.type",
+	d4.d_name AS "politics.name",
+	u.org_id AS "org.id",
+	o.org_name AS "org.name",
+	o.org_code AS "org.code",
+	o.org_address AS "org.address",
+	o.org_legal AS "org.legal",
+	o.org_phone AS "org.phone"
+	FROM USER u
+	JOIN dic d1 ON d1.d_type = '性别' AND d1.d_value = u.u_gender
+	JOIN dic d2 ON d2.d_type = '民族' AND d2.d_value = u.u_nation
+	JOIN dic d3 ON d3.d_type = '职务' AND d3.d_value = u.u_job
+	JOIN dic d4 ON d4.d_type = '政治面貌' AND d4.d_value = u.u_politics
+	JOIN org o ON o.org_id = u.org_id
+	WHERE 1 = 1
+-->

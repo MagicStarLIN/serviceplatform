@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>添加组织机构</title>
@@ -13,28 +13,29 @@
 <div class="book_con01">
 
     <h1 class="book_h01">个人详情</h1>
+    <form>
     <p class="book_p">
     <table class="book_table" border="1" cellpadding="10">
         <tr>
             <td>
                 <label class="td_label">证书代码</label>
             </td>
-            <td  ><input type="text" class="book_input03"></td>
+            <td  ><input type="text"id = "code" class="book_input03"></td>
             <td>
                 <label class="td_label">组织机构名称</label>
             </td>
-            <td  ><input type="text" class="book_input03"></td>
+            <td  ><input type="text" id="name" class="book_input03"></td>
 
 
         </tr>
         <tr><td>
             <label class="td_label">法人</label>
         </td>
-            <td ><input type="text" class="book_input03"></td>
+            <td ><input type="text"id="legal" class="book_input03"></td>
             <td>
                 <label class="td_label">联系电话</label>
             </td>
-            <td  ><input type="text" class="book_input03"></td>
+            <td  ><input type="text" id="phone" class="book_input03"></td>
 
 
 
@@ -42,7 +43,7 @@
         <tr>
             <td><label class="td_label">地址</label></td>
             <td colspan="3">
-                <input type="text" class="book_input03" />
+                <input type="text" id = "address" class="book_input03" />
             </td>
 
         </tr>
@@ -51,7 +52,9 @@
 
     </table>
     </p>
-    <p class="book_foot"><input type="button" value="保存"/><input type="button" value="重置"/><input type="button" value="关闭"/></p>
+    <p class="book_foot"><input type="button" onclick="addOrg();" value="保存"/><input type="button" value="重置"/><input type="button" value="关闭"/></p>
+
+    </form>
 </div>
 <script  src="js/jquery/jQuery-2.2.0.min.js"></script>
 <script src="js/editor/js/froala_editor.min.js"></script>
@@ -68,6 +71,31 @@
     $(function(){
         $('#editor').editable({inlineMode: false, alwaysBlank: true})
     });
+    function addOrg() {
+        var code = $("#code").val().trim();
+        var name = $("#name").val().trim();
+        var address = $("#address").val().trim();
+        var legal = $("#legal").val().trim();
+        var phone = $("#phone").val().trim();
+        if(code.length == 0 || name.length == 0 || legal.length == 0 || phone.length == 0) {
+            alert('星号必须填写');
+        } else {
+
+            $.ajax({
+                url:'org',
+                method: 'POST',
+                data:{code:code,name:name,address:address,legal:legal,phone:phone},
+                success:function (result) {
+                    if(result.success) {
+                        alert('添加成功');
+                        location.href = "Addinstitutionalframework.html";
+                    } else {
+                        alert(result.msg);
+                    }
+                }
+            });
+        }
+    }
 </script>
 </body>
 </html>
